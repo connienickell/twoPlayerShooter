@@ -2,6 +2,7 @@ import pygame
 import os
 import time
 import random
+import startButton
 pygame.init()
 
 clock = pygame.time.Clock()
@@ -11,14 +12,27 @@ WIDTH, HEIGHT = 700, 700
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Two Player Shooter")
 
+#load button images
+startImg = pygame.image.load(os.path.join('assets', 'start_button.png')).convert_alpha()
+
+playerOneCoolDown = 0
+playerTwoCoolDown = 0
+    
+#create button instances
+startButton = startButton.Button(300, 280, startImg, 0.2)
+
 #player placement
 playerOneX = 20
 playerOneY = HEIGHT/2
+playerOneX2 = playerOneX + 25
+playerOneY2 = playerOneY + 25
 
-playerTwoX = WIDTH - 30
-playerTwoY = HEIGHT/2 - 10
+playerTwoX = WIDTH - 35
+playerTwoY = HEIGHT/2
+playerTwoX2 = playerTwoX + 25
+playerTwoY2 = playerTwoY + 25
 
-#arrays of lasers
+#arrays of players' lasers
 playerOneLasers = []
 playerTwoLasers = []
 
@@ -28,18 +42,8 @@ laserVelX = 10
 playerOneHealth = 3
 playerTwoHealth = 3
 
-#detect collisions
-# def collisionPlayerOne():
-#     for laser in playerOneLasers:
-#         if playerTwoCoordinates touch laser coordinates
-#         playerTwoHealth -= 1 
-
-# def collisionPlayerTwo():
-#     for laser in playerOneLasers:
-#         if playerTwoCoordinates touch laser coordinates
-#         playerTwoHealth -= 1 
-
-
+#player one = awsd and L shift
+#player two = d,r,l,u and m
 #handle input/move players
 def handleUserInput():
     key_pressed = pygame.key.get_pressed()
@@ -55,14 +59,14 @@ def handleUserInput():
         if not playerOneY > HEIGHT:
             playerOneY += 3
     if key_pressed [pygame.K_d]:
-        if not playerOneX > WIDTH/2 - 10:
+        if not playerOneX > WIDTH/2 - 20:
             playerOneX += 3
     if key_pressed [pygame.K_LSHIFT]:
             createAndAppendLasersPlayerOne()
 
     if key_pressed [pygame.K_LEFT]:
         global playerTwoX
-        if not playerTwoX < WIDTH/2 + 10:
+        if not playerTwoX < WIDTH/2 + 20:
             playerTwoX -= 3
     if key_pressed [pygame.K_UP]:
         global playerTwoY
@@ -77,26 +81,42 @@ def handleUserInput():
     if key_pressed [pygame.K_m]:
             createAndAppendLasersPlayerTwo()
 
-playerOneCoolDown = 0
-playerTwoCoolDown = 0
-
 def createAndAppendLasersPlayerOne():
     global playerOneCoolDown
     if playerOneCoolDown <= 0:
-        playerOneLasers.append([playerOneX + 14, playerOneY - 3])
+        playerOneLasers.append([playerOneX + 23, playerOneY + 10])
         playerOneCoolDown = 25
     
 def createAndAppendLasersPlayerTwo():
     global playerTwoCoolDown
     if playerTwoCoolDown <= 0:
-        playerTwoLasers.append([playerTwoX - 20, playerTwoY + 9])
+        playerTwoLasers.append([playerTwoX - 18, playerTwoY + 12])
         playerTwoCoolDown = 25
 
+running = False
+startup = True
+
+#            #
+# start page #
+#            #
+
+while startup:
+    screen.fill((4, 20, 40))
+
+    if startButton.draw(screen):
+        running = True
+        startup = False
+
+    pygame.display.update()
+
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            startup = False
 
 #                #
 # main game loop #
 #                #
-running = True
+
 while running:
     # Leave the loop if player quits
     for event in pygame.event.get():
@@ -105,11 +125,11 @@ while running:
 
     handleUserInput()
 
-    screen.fill((0, 0, 0))
+    screen.fill((4, 20, 40))
     
     # draw players
-    playerOne = pygame.draw.circle(screen, (245, 40, 40), (playerOneX, playerOneY), 10)
-    playerTwo = pygame.draw.rect(screen, (40, 40, 245), pygame.Rect(playerTwoX, playerTwoY, 20, 20), 10)
+    playerOne = pygame.draw.rect(screen, (253, 253, 150), (playerOneX, playerOneY, 25, 25), 8)
+    playerTwo = pygame.draw.rect(screen, (169, 198, 227), pygame.Rect(playerTwoX, playerTwoY, 25, 25), 8)
 
     #draw and move lasers
     for laser in playerOneLasers:
@@ -140,8 +160,6 @@ while running:
     clock.tick(fps)
 
 pygame.quit()
-
-
 
 # be able to shoot at each other
     # controls: aswd + 1(shoot) and up, down, l, r + m(shoot)
