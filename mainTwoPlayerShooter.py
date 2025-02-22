@@ -1,8 +1,8 @@
 import pygame
 import os
 import time
-import random
 import startButton
+import utilities
 pygame.init()
 
 clock = pygame.time.Clock()
@@ -62,7 +62,7 @@ def handleUserInput():
         if not playerOneX > WIDTH/2 - 20:
             playerOneX += 3
     if key_pressed [pygame.K_LSHIFT]:
-            createAndAppendLasersPlayerOne()
+        createAndAppendLasersPlayerOne()
 
     if key_pressed [pygame.K_LEFT]:
         global playerTwoX
@@ -79,7 +79,7 @@ def handleUserInput():
         if not playerTwoX > WIDTH - 10:
             playerTwoX += 3
     if key_pressed [pygame.K_m]:
-            createAndAppendLasersPlayerTwo()
+        createAndAppendLasersPlayerTwo()
 
 def createAndAppendLasersPlayerOne():
     global playerOneCoolDown
@@ -92,6 +92,32 @@ def createAndAppendLasersPlayerTwo():
     if playerTwoCoolDown <= 0:
         playerTwoLasers.append([playerTwoX - 18, playerTwoY + 12])
         playerTwoCoolDown = 25
+
+def detectCollisionPlayerOne():
+    global playerOneHealth
+    for laser in playerTwoLasers[:]:
+        if (playerOneX2 < laser[0]) or (playerOneX > laser[0] + 15):
+            continue
+        elif (playerOneY > laser[1]) or (playerOneY2 < laser[1]):
+            continue
+        else:
+            playerTwoLasers.remove(laser)
+            playerOneHealth -= 1
+
+# def detectCollisionPlayerTwo():
+#     global playerTwoHealth
+#     for laser in playerOneLasers[:]:
+#         if (playerOneX2 < laser[0]) or (playerOneX > laser[0] + 15):
+#             print("option 1")
+#             continue
+#         elif (playerOneY > laser[1]) or (playerOneY2 < laser[1]): 
+#             print ("option 2")
+#             continue
+#         else:
+#             playerTwoLasers.remove(laser)
+#             playerTwoHealth -= 1
+#             print("option 3")
+
 
 running = False
 startup = True
@@ -140,6 +166,8 @@ while running:
         pygame.draw.rect(screen, (255, 255, 255), pygame.Rect(laser[0], laser[1], 15, 5), 8)
         laser[0] -= laserVelX
 
+    detectCollisionPlayerOne()
+
     pygame.display.update()
     
     #update player cooldown corresponding with fps
@@ -169,4 +197,3 @@ pygame.quit()
     # if either player loses all health
         # display winner
 # start screen 
-
