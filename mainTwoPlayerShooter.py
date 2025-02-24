@@ -15,13 +15,14 @@ pygame.display.set_caption("Two Player Shooter")
 #load button images
 startImg = pygame.image.load(os.path.join('assets', 'start_button.png')).convert_alpha()
 
+#laser timing
 playerOneCoolDown = 0
 playerTwoCoolDown = 0
     
 #create button instances
 startButton = startButton.Button(300, 280, startImg, 0.2)
 
-#player placement
+#player coordinates
 playerOneX = 20
 playerOneY = HEIGHT/2
 playerOneX2 = playerOneX + 25
@@ -93,30 +94,30 @@ def createAndAppendLasersPlayerTwo():
         playerTwoLasers.append([playerTwoX - 18, playerTwoY + 12])
         playerTwoCoolDown = 25
 
+#collision control
 def detectCollisionPlayerOne():
     global playerOneHealth
     for laser in playerTwoLasers[:]:
         if (playerOneX2 < laser[0]) or (playerOneX > laser[0] + 15):
             continue
-        elif (playerOneY > laser[1]) or (playerOneY2 < laser[1]):
+        elif (playerOneY > laser[1] + 5) or (playerOneY2 < laser[1]):
             continue
         else:
             playerTwoLasers.remove(laser)
             playerOneHealth -= 1
 
-# def detectCollisionPlayerTwo():
-#     global playerTwoHealth
-#     for laser in playerOneLasers[:]:
-#         if (playerOneX2 < laser[0]) or (playerOneX > laser[0] + 15):
-#             print("option 1")
-#             continue
-#         elif (playerOneY > laser[1]) or (playerOneY2 < laser[1]): 
-#             print ("option 2")
-#             continue
-#         else:
-#             playerTwoLasers.remove(laser)
-#             playerTwoHealth -= 1
-#             print("option 3")
+def detectCollisionPlayerTwo():
+    global playerTwoHealth
+    for laser in playerOneLasers[:]:
+        if (playerTwoX > laser[0] + 15) or (playerTwoX2 < laser[0]):
+            # 
+            continue
+        elif (playerTwoY > laser[1] + 5) or (playerTwoY2 < laser[1]):
+            # 
+            continue
+        else:
+            playerOneLasers.remove(laser)
+            playerTwoHealth -= 1
 
 
 running = False
@@ -138,6 +139,9 @@ while startup:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             startup = False
+
+
+
 
 #                #
 # main game loop #
@@ -167,6 +171,7 @@ while running:
         laser[0] -= laserVelX
 
     detectCollisionPlayerOne()
+    detectCollisionPlayerTwo()
 
     pygame.display.update()
     
@@ -178,12 +183,14 @@ while running:
     if playerOneHealth == 0:
         print("player two wins!")
         pygame.time.delay(2000)
-        pygame.quit()
+        startup = True
+        running = False
 
     if playerTwoHealth == 0:
         print("player one wins!")
         pygame.time.delay(2000)
-        pygame.quit()
+        startup = True
+        running = False
 
     clock.tick(fps)
 
@@ -197,3 +204,10 @@ pygame.quit()
     # if either player loses all health
         # display winner
 # start screen 
+
+# I am grateful for basecamp, such a good bright atmosphere to work in
+# I am grateful for changing seasons - it's so mesmerizing to see the new buds pop up and the outdoor activities spring up
+# I am grateful for art- some of it I'll never understand the appeal of, but the rest of it inspires me to find the creative parts of my brain
+# I am grateful for coffee. Yes, it may be my addiction, but it is also what many conversations have centered around
+# I am grateful for family. My biological family shows me what I am missing, and the family I choose surprises me with what family can be
+# I am grateful 
