@@ -25,13 +25,11 @@ startButton = startButton.Button(300, 280, startImg, 0.2)
 #player coordinates
 playerOneX = 20
 playerOneY = HEIGHT/2
-playerOneX2 = playerOneX + 25
-playerOneY2 = playerOneY + 25
-
 playerTwoX = WIDTH - 35
 playerTwoY = HEIGHT/2
-playerTwoX2 = playerTwoX + 25
-playerTwoY2 = playerTwoY + 25
+
+playerWidth = 25
+playerHeight = 25
 
 #arrays of players' lasers
 playerOneLasers = []
@@ -98,9 +96,12 @@ def createAndAppendLasersPlayerTwo():
 def detectCollisionPlayerOne():
     global playerOneHealth
     for laser in playerTwoLasers[:]:
-        if (playerOneX2 < laser[0]) or (playerOneX > laser[0] + 15):
+        # print("laser x =" + str(laser[0]) + ": player one right side" + str(playerOneX2)) 
+        if (playerOneX + playerWidth < laser[0]) or (playerOneX > laser[0] + 15):
+            # print ("outside x bounds")
             continue
-        elif (playerOneY > laser[1] + 5) or (playerOneY2 < laser[1]):
+        elif (playerOneY > laser[1] + 5) or (playerOneY + playerHeight < laser[1]):
+            # print("outside y bounds")
             continue
         else:
             playerTwoLasers.remove(laser)
@@ -109,11 +110,9 @@ def detectCollisionPlayerOne():
 def detectCollisionPlayerTwo():
     global playerTwoHealth
     for laser in playerOneLasers[:]:
-        if (playerTwoX > laser[0] + 15) or (playerTwoX2 < laser[0]):
-            # 
+        if (playerTwoX > laser[0] + 15) or (playerTwoX + playerWidth < laser[0]): 
             continue
-        elif (playerTwoY > laser[1] + 5) or (playerTwoY2 < laser[1]):
-            # 
+        elif (playerTwoY > laser[1] + 5) or (playerTwoY + playerHeight < laser[1]):
             continue
         else:
             playerOneLasers.remove(laser)
